@@ -111,51 +111,126 @@ resource "kubernetes_deployment" "deployment" {
           }
 
           pod_affinity {
+            dynamic "required_during_scheduling_ignored_during_execution" {
+              for_each = var.required_pod_affinity_label_selector != null ? [1] : []
 
+              content {
+                namespaces     = var.required_pod_affinity_namespaces
+                topology_key   = var.required_pod_affinity_topology_key
+                label_selector = var.required_pod_affinity_label_selector
+              }
+            }
+
+            dynamic "preferred_during_scheduling_ignored_during_execution" {
+              for_each = var.preferred_pod_affinity_label_selector != null ? [1] : []
+
+              content {
+                weight = 0
+                pod_affinity_term {
+                  namespaces     = var.preferred_pod_affinity_namespaces
+                  topology_key   = var.preferred_pod_affinity_topology_key
+                  label_selector = var.preferred_pod_affinity_label_selector
+                }
+              }
+            }
           }
 
           pod_anti_affinity {
+            dynamic "required_during_scheduling_ignored_during_execution" {
+              for_each = var.required_pod_anti_affinity_label_selector != null ? [1] : []
 
+              content {
+                namespaces     = var.required_pod_anti_affinity_namespaces
+                topology_key   = var.required_pod_anti_affinity_topology_key
+                label_selector = var.required_pod_anti_affinity_label_selector
+              }
+            }
+
+            dynamic "preferred_during_scheduling_ignored_during_execution" {
+              for_each = var.preferred_pod_anti_affinity_label_selector != null ? [1] : []
+
+              content {
+                weight = 0
+                pod_affinity_term {
+                  namespaces     = var.preferred_pod_anti_affinity_namespaces
+                  topology_key   = var.preferred_pod_anti_affinity_topology_key
+                  label_selector = var.preferred_pod_anti_affinity_label_selector
+                }
+              }
+            }
           }
         }
 
-        container {
-          name = ""
-        }
+        dynamic "container" {
+          for_each = var.containers
 
-        init_container {
-          name = ""
-        }
+          content {
+            name  = container.value.name
+            image = container.value.image
+            args  = container.value.args
 
+            dynamic "env" {
+              for_each = container.value.env
+
+              content {
+                name       = env.value.name
+                value      = env.value.value
+                value_from = env.value.value_from
+              }
+            }
+
+            dynamic "port" {
+              for_each = container.value.port
+
+              content {
+                container_port = port.value.container_port
+                protocol       = port.value.protocol
+              }
+            }
+
+            resources {
+              limits {
+                cpu    = container.value.resources.limits.cpu
+                memory = container.value.resources.limits.memory
+              }
+              requests {
+                cpu    = container.value.resources.requests.cpu
+                memory = container.value.resources.requests.memory
+              }
+            }
+          }
+        }
 
         dns_config {
+          nameservers = var.dns_nameservers
+          searches    = var.dns_search_domains
 
+          dynamic "option" {
+            for_each = var.dns_resolver_options
+
+            content {
+              name  = option.value.name
+              value = option.value.value
+            }
+          }
         }
 
-        host_aliases {
-          hostnames = []
-          ip        = ""
+        dynamic "host_aliases" {
+          for_each = var.host_aliases
+
+          content {
+            hostnames = host_aliases.value.hostnames
+            ip        = host_aliases.value.ip
+          }
         }
 
+        dynamic "image_pull_secrets" {
+          for_each = var.image_pull_secret_names
 
-
-        image_pull_secrets {
-          name = ""
+          content {
+            name = image_pull_secrets.value
+          }
         }
-
-
-        security_context {
-
-        }
-
-        toleration {
-
-        }
-
-        volume {
-
-        }
-
       }
     }
   }

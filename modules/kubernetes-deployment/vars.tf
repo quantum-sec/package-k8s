@@ -34,6 +34,7 @@ variable "name" {
 variable "namespace" {
   description = "The namespace within which the name of the deployment must be unique."
   type        = string
+  default     = null
 }
 
 variable "annotations" {
@@ -104,7 +105,7 @@ variable "max_unavailable" {
 
 variable "selector" {
   description = "A label query over pods that should match the Replicas count. Label keys and values that must match in order to be controlled by this deployment. Must match labels (`metadata.0.labels`)."
-  type        = string
+  type        = object
   default     = null
 }
 
@@ -203,7 +204,7 @@ variable "required_node_affinity_rules" {
   type = set(object({
     key      = string,
     operator = string,
-    values   = list(string)
+    values   = set(string),
   }))
   default = []
 }
@@ -213,7 +214,144 @@ variable "preferred_node_affinity_rules" {
   type = set(object({
     key      = string,
     operator = string,
-    values   = list(string)
+    values   = set(string),
   }))
   default = []
 }
+
+variable "required_pod_affinity_label_selector" {
+  description = "A map of labels the scheduler will use when placing the deployment. A pod must match all of the supplied labels."
+  type        = map(string)
+  default     = null
+}
+
+variable "required_pod_affinity_namespaces" {
+  description = "Specifies which namespaces to which `required_pod_affinity_label_selector` applies. When omitted, it defaults to the pod's own namespace."
+  type        = set(string)
+  default     = []
+}
+
+variable "required_pod_affinity_topology_key" {
+  description = "The topology key with which this pod must be co-located."
+  type        = string
+  default     = null
+}
+
+variable "preferred_pod_affinity_label_selector" {
+  description = "A map of labels the scheduler will use when placing the deployment. A pod should match all labels, however the scheduler may choose a pod that does not match all of the labels."
+  type        = map(string)
+  default     = null
+}
+
+variable "preferred_pod_affinity_namespaces" {
+  description = "Specifies the namespaces to which `preferred_pod_affinity_label_selector` applies. When omitted, it defaults to the pod's own namespace."
+  type        = set(string)
+  default     = []
+}
+
+variable "preferred_pod_affinity_topology_key" {
+  description = "The topology key with which this pod should be co-located."
+  type        = string
+  default     = null
+}
+
+variable "required_pod_anti_affinity_label_selector" {
+  description = "A map of labels the scheduler will use when placing the deployment. A pod must not match any of the supplied labels."
+  type        = map(string)
+  default     = null
+}
+
+variable "required_pod_anti_affinity_namespaces" {
+  description = "Specifies the namespaces to which `required_pod_anti_affinity_label_selector` applies. When omitted, it defaults to the pod's own namespace."
+  type        = set(string)
+  default     = []
+}
+
+variable "required_pod_anti_affinity_topology_key" {
+  description = "The topology key with which this pod must not be co-located."
+  type        = string
+  default     = null
+}
+
+variable "preferred_pod_anti_affinity_label_selector" {
+  description = "A map of labels the scheduler will use when placing the deployment. A pod should not match any of the supplied labels, however the scheduler may choose a pod that does match one or more of the labels."
+  type        = map(string)
+  default     = null
+}
+
+variable "preferred_pod_anti_affinity_namespaces" {
+  description = "Specifies the namespaces to which `preferred_pod_anti_affinity_label_selector` applies. When omitted, it defaults to the pod's own namespace."
+  type        = set(string)
+  default     = []
+}
+
+variable "preferred_pod_anti_affinity_topology_key" {
+  description = "The topology key with which this pod should not be co-located."
+  type        = string
+  default     = null
+}
+
+variable "dns_nameservers" {
+  description = "A list of DNS name server IP addresses specified as strings. This will be appended to the base nameservers generated from the DNS policy. Duplicated nameservers will be removed."
+  type        = set(string)
+  default     = []
+}
+
+variable "dns_resolver_options" {
+  description = "A list of DNS resolver options specified as blocks with `name`/`value` pairs. This will be merged with the base options generated from the DNS policy. Duplicated entries will be removed."
+  type = set(object({
+    name  = string,
+    value = string,
+  }))
+  default = []
+}
+
+variable "dns_search_domains" {
+  description = "A list of DNS search domains for hostname lookup specified as strings."
+  type        = set(string)
+  default     = []
+}
+
+variable "image_pull_secret_names" {
+  description = "A list of the Kubernetes secrets (by secret name) containing the credentials for pulling images."
+  type        = set(string)
+  default     = []
+}
+
+variable "host_aliases" {
+  description = "A list of hostnames and IP addresses that will be injected into each container's hosts file."
+  type = set(object({
+    hostnames = set(string)
+    ip        = string
+  }))
+  default = []
+}
+
+variable "containers" {
+  description = "A list of containers that are members of this pod."
+  type = set(object({
+    args = list(string),
+    env = list(object({
+      name       = string,
+      value      = string,
+      value_from = string,
+    })),
+    image = string,
+    port = list(object({
+      container_port = number,
+      protocol       = string,
+    })),
+    resources = object({
+      limits = object({
+        cpu    = string,
+        memory = string,
+      }),
+      requests = object({
+        cpu    = string,
+        memory = string
+      }),
+    })
+  }))
+}
+
+# description = "A label query over a set of pods used by the scheduler to select a deployment target."
