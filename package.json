@@ -1,0 +1,12 @@
+{
+  "name": "@quantum-sec/package-k8s",
+  "version": "0.0.0-development",
+  "private": true,
+  "description": "Contains modules for deploying and managing Kubernetes application resources.",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:quantum-sec/package-k8s.git"
+  },
+  "author": "Quantum Security Pte. Ltd.",
+  "license": "SEE LICENSE IN LICENSE"
+}
