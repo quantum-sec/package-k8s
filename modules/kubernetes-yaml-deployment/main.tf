@@ -7,7 +7,7 @@ terraform {
 }
 
 locals {
-  deployment = yamldecode(var.deployment_yaml)
+  deployment = yamldecode(file("./k8s-deployment.yaml"))
 }
 
 module "kubernetes_deployment" {

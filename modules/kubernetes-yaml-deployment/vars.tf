@@ -21,12 +21,3 @@ variable "cluster_ca_certificate" {
   description = "The cluster's CA certificate (in PEM format) used to validate remote host identity."
   type        = string
 }
-
-# ---------------------------------------------------------------------------------------------------------------------
-# DEPLOYMENT VARIABLES
-# ---------------------------------------------------------------------------------------------------------------------
-
-variable "deployment_yaml" {
-  description = "The YAML definition of the Kubernetes deployment."
-  type        = map(string)
-}
