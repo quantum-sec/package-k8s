@@ -337,7 +337,7 @@ variable "containers" {
       value_from = string,
     })),
     image = string,
-    port = list(object({
+    ports = list(object({
       container_port = number,
       protocol       = string,
     })),
