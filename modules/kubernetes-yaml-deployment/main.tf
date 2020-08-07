@@ -36,7 +36,6 @@ module "kubernetes_deployment" {
   # TEMPLATE SPEC
   containers                       = var.deployment_yaml.spec.template.spec.containers
   dns_policy                       = var.deployment_yaml.spec.template.spec.dnsPolicy
-  dns_config                       = var.deployment_yaml.spec.template.spec.dnsConfig
   host_aliases                     = var.deployment_yaml.spec.template.spec.hostAliases
   image_pull_secret_names          = var.deployment_yaml.spec.template.spec.imagePullSecrets
   pod_hostname                     = var.deployment_yaml.spec.template.spec.hostname
