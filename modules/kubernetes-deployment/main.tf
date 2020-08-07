@@ -115,9 +115,11 @@ resource "kubernetes_deployment" "deployment" {
               for_each = var.required_pod_affinity_label_selector != null ? [1] : []
 
               content {
-                namespaces     = var.required_pod_affinity_namespaces
-                topology_key   = var.required_pod_affinity_topology_key
-                label_selector = var.required_pod_affinity_label_selector
+                namespaces   = var.required_pod_affinity_namespaces
+                topology_key = var.required_pod_affinity_topology_key
+                label_selector {
+                  match_labels = var.required_pod_affinity_label_selector
+                }
               }
             }
 
@@ -127,9 +129,11 @@ resource "kubernetes_deployment" "deployment" {
               content {
                 weight = 0
                 pod_affinity_term {
-                  namespaces     = var.preferred_pod_affinity_namespaces
-                  topology_key   = var.preferred_pod_affinity_topology_key
-                  label_selector = var.preferred_pod_affinity_label_selector
+                  namespaces   = var.preferred_pod_affinity_namespaces
+                  topology_key = var.preferred_pod_affinity_topology_key
+                  label_selector {
+                    match_labels = var.preferred_pod_affinity_label_selector
+                  }
                 }
               }
             }
@@ -140,9 +144,11 @@ resource "kubernetes_deployment" "deployment" {
               for_each = var.required_pod_anti_affinity_label_selector != null ? [1] : []
 
               content {
-                namespaces     = var.required_pod_anti_affinity_namespaces
-                topology_key   = var.required_pod_anti_affinity_topology_key
-                label_selector = var.required_pod_anti_affinity_label_selector
+                namespaces   = var.required_pod_anti_affinity_namespaces
+                topology_key = var.required_pod_anti_affinity_topology_key
+                label_selector {
+                  match_labels = var.required_pod_anti_affinity_label_selector
+                }
               }
             }
 
@@ -152,9 +158,11 @@ resource "kubernetes_deployment" "deployment" {
               content {
                 weight = 0
                 pod_affinity_term {
-                  namespaces     = var.preferred_pod_anti_affinity_namespaces
-                  topology_key   = var.preferred_pod_anti_affinity_topology_key
-                  label_selector = var.preferred_pod_anti_affinity_label_selector
+                  namespaces   = var.preferred_pod_anti_affinity_namespaces
+                  topology_key = var.preferred_pod_anti_affinity_topology_key
+                  label_selector {
+                    match_labels = var.preferred_pod_anti_affinity_label_selector
+                  }
                 }
               }
             }
@@ -173,9 +181,8 @@ resource "kubernetes_deployment" "deployment" {
               for_each = container.value.env
 
               content {
-                name       = env.value.name
-                value      = env.value.value
-                value_from = env.value.value_from
+                name  = env.value.name
+                value = env.value.value
               }
             }
 

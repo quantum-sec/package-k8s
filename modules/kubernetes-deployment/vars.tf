@@ -159,7 +159,7 @@ variable "node_name" {
 
 variable "node_selector" {
   description = "A selector which must be true for the pod to fit on a node. It must match a node's labels for the pod to be scheduled on that node."
-  type        = string
+  type        = map(string)
   default     = null
 }
 
