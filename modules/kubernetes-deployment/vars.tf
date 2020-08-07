@@ -105,7 +105,7 @@ variable "max_unavailable" {
 
 variable "selector" {
   description = "A label query over pods that should match the Replicas count. Label keys and values that must match in order to be controlled by this deployment. Must match labels (`metadata.0.labels`)."
-  type        = object
+  type        = map(string)
   default     = null
 }
 
