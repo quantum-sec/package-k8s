@@ -337,10 +337,7 @@ variable "containers" {
       value_from = string,
     })),
     image = string,
-    ports = list(object({
-      container_port = number,
-      protocol       = string,
-    })),
+    ports = list(map(any)),
     resources = object({
       limits = object({
         cpu    = string,

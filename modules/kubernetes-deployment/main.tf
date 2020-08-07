@@ -190,8 +190,8 @@ resource "kubernetes_deployment" "deployment" {
               for_each = container.value.port
 
               content {
-                container_port = port.value.container_port
-                protocol       = port.value.protocol
+                container_port = try(port.value["container_port"], port.value["containerPort"])
+                protocol       = try(port.value["protocol"], "tcp")
               }
             }
 
