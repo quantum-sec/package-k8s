@@ -83,7 +83,7 @@ resource "kubernetes_deployment" "deployment" {
             required_during_scheduling_ignored_during_execution {
               node_selector_term {
                 dynamic "match_expressions" {
-                  for_each = var.required_node_affinity_rules
+                  for_each = coalesce(var.required_node_affinity_rules, [])
 
                   content {
                     key      = match_expressions["key"]
@@ -98,7 +98,7 @@ resource "kubernetes_deployment" "deployment" {
               weight = 0
               preference {
                 dynamic "match_expressions" {
-                  for_each = var.preferred_node_affinity_rules
+                  for_each = coalesce(var.preferred_node_affinity_rules, [])
 
                   content {
                     key      = match_expressions["key"]
@@ -178,7 +178,7 @@ resource "kubernetes_deployment" "deployment" {
             args  = container.value.args
 
             dynamic "env" {
-              for_each = container.value.env
+              for_each = coalesce(container.value.env, [])
 
               content {
                 name  = env.value.name
@@ -187,7 +187,7 @@ resource "kubernetes_deployment" "deployment" {
             }
 
             dynamic "port" {
-              for_each = container.value.port
+              for_each = coalesce(container.value.ports, [])
 
               content {
                 container_port = try(port.value["container_port"], port.value["containerPort"])
@@ -213,7 +213,7 @@ resource "kubernetes_deployment" "deployment" {
           searches    = var.dns_search_domains
 
           dynamic "option" {
-            for_each = var.dns_resolver_options
+            for_each = coalesce(var.dns_resolver_options, [])
 
             content {
               name  = option.value.name
@@ -223,7 +223,7 @@ resource "kubernetes_deployment" "deployment" {
         }
 
         dynamic "host_aliases" {
-          for_each = var.host_aliases
+          for_each = coalesce(var.host_aliases, [])
 
           content {
             hostnames = host_aliases.value.hostnames
@@ -232,7 +232,7 @@ resource "kubernetes_deployment" "deployment" {
         }
 
         dynamic "image_pull_secrets" {
-          for_each = var.image_pull_secret_names
+          for_each = coalesce(var.image_pull_secret_names, [])
 
           content {
             name = image_pull_secrets.value

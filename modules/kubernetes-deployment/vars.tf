@@ -330,6 +330,7 @@ variable "host_aliases" {
 variable "containers" {
   description = "A list of containers that are members of this pod."
   type = set(object({
+    name = string,
     args = list(string),
     env = list(object({
       name       = string,
