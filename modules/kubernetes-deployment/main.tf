@@ -80,30 +80,39 @@ resource "kubernetes_deployment" "deployment" {
 
         affinity {
           node_affinity {
-            required_during_scheduling_ignored_during_execution {
-              node_selector_term {
-                dynamic "match_expressions" {
-                  for_each = coalesce(var.required_node_affinity_rules, [])
 
-                  content {
-                    key      = match_expressions["key"]
-                    operator = match_expressions["operator"]
-                    values   = match_expressions["values"]
+            dynamic "required_during_scheduling_ignored_during_execution" {
+              for_each = var.required_node_affinity_rules != null ? [1] : []
+
+              content {
+                node_selector_term {
+                  dynamic "match_expressions" {
+                    for_each = coalesce(var.required_node_affinity_rules, [])
+
+                    content {
+                      key      = match_expressions["key"]
+                      operator = match_expressions["operator"]
+                      values   = match_expressions["values"]
+                    }
                   }
                 }
               }
             }
 
-            preferred_during_scheduling_ignored_during_execution {
-              weight = 0
-              preference {
-                dynamic "match_expressions" {
-                  for_each = coalesce(var.preferred_node_affinity_rules, [])
+            dynamic "preferred_during_scheduling_ignored_during_execution" {
+              for_each = var.preferred_node_affinity_rules != null ? [1] : []
 
-                  content {
-                    key      = match_expressions["key"]
-                    operator = match_expressions["operator"]
-                    values   = match_expressions["values"]
+              content {
+                weight = 1
+                preference {
+                  dynamic "match_expressions" {
+                    for_each = coalesce(var.preferred_node_affinity_rules, [])
+
+                    content {
+                      key      = match_expressions["key"]
+                      operator = match_expressions["operator"]
+                      values   = match_expressions["values"]
+                    }
                   }
                 }
               }
@@ -127,7 +136,7 @@ resource "kubernetes_deployment" "deployment" {
               for_each = var.preferred_pod_affinity_label_selector != null ? [1] : []
 
               content {
-                weight = 0
+                weight = 1
                 pod_affinity_term {
                   namespaces   = var.preferred_pod_affinity_namespaces
                   topology_key = var.preferred_pod_affinity_topology_key
@@ -156,7 +165,7 @@ resource "kubernetes_deployment" "deployment" {
               for_each = var.preferred_pod_anti_affinity_label_selector != null ? [1] : []
 
               content {
-                weight = 0
+                weight = 1
                 pod_affinity_term {
                   namespaces   = var.preferred_pod_anti_affinity_namespaces
                   topology_key = var.preferred_pod_anti_affinity_topology_key
@@ -191,7 +200,7 @@ resource "kubernetes_deployment" "deployment" {
 
               content {
                 container_port = try(port.value["container_port"], port.value["containerPort"])
-                protocol       = try(port.value["protocol"], "tcp")
+                protocol       = try(port.value["protocol"], "TCP")
               }
             }
 
