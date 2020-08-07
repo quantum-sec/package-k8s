@@ -28,5 +28,5 @@ variable "cluster_ca_certificate" {
 
 variable "deployment_yaml" {
   description = "The YAML definition of the Kubernetes deployment."
-  type        = map(string)
+  type        = map(any)
 }
