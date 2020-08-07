@@ -10,8 +10,8 @@ locals {
   deployment    = yamldecode(var.deployment_yaml)
   metadata      = local.deployment["metadata"]
   spec          = local.deployment["spec"]
-  template      = local.deployment["template"]
-  template_spec = local.deployment["template"]["spec"]
+  template      = local.spec["template"]
+  template_spec = local.template["spec"]
 }
 
 module "kubernetes_deployment" {
