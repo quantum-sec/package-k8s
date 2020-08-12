@@ -85,9 +85,11 @@ resource "kubernetes_deployment" "deployment" {
 
               content {
                 node_selector_term {
-                  key      = match_expressions["key"]
-                  operator = match_expressions["operator"]
-                  values   = match_expressions["values"]
+                  match_expressions {
+                    key      = var.required_node_affinity_key
+                    operator = var.required_node_affinity_operator
+                    values   = var.required_node_affinity_values
+                  }
                 }
               }
             }
@@ -98,9 +100,11 @@ resource "kubernetes_deployment" "deployment" {
               content {
                 weight = 0
                 preference {
-                  key      = match_expressions["key"]
-                  operator = match_expressions["operator"]
-                  values   = match_expressions["values"]
+                  match_expressions {
+                    key      = var.preferred_node_affinity_key
+                    operator = var.preferred_node_affinity_operator
+                    values   = var.preferred_node_affinity_values
+                  }
                 }
               }
             }
