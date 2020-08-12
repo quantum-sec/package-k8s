@@ -219,6 +219,42 @@ variable "preferred_node_affinity_rules" {
   default = []
 }
 
+variable "preferred_node_affinity_key" {
+  description = "The label key that the selector applies to."
+  type        = string
+  default     = null
+}
+
+variable "preferred_node_affinity_operator" {
+  description = "Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt."
+  type        = string
+  default     = null
+}
+
+variable "preferred_node_affinity_values" {
+  description = "An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer."
+  type        = set(string)
+  default     = []
+}
+
+variable "required_node_affinity_key" {
+  description = "The label key that the selector applies to."
+  type        = string
+  default     = null
+}
+
+variable "required_node_affinity_operator" {
+  description = "Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt."
+  type        = string
+  default     = null
+}
+
+variable "required_node_affinity_values" {
+  description = "An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer."
+  type        = set(string)
+  default     = []
+}
+
 variable "required_pod_affinity_label_selector" {
   description = "A map of labels the scheduler will use when placing the deployment. A pod must match all of the supplied labels."
   type        = map(string)
