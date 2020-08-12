@@ -80,20 +80,15 @@ resource "kubernetes_deployment" "deployment" {
 
         affinity {
           node_affinity {
-
             dynamic "required_during_scheduling_ignored_during_execution" {
               for_each = var.required_node_affinity_rules != null ? [1] : []
 
               content {
                 node_selector_term {
-                  dynamic "match_expressions" {
-                    for_each = coalesce(var.required_node_affinity_rules, [])
-
-                    content {
-                      key      = match_expressions["key"]
-                      operator = match_expressions["operator"]
-                      values   = match_expressions["values"]
-                    }
+                  content {
+                    key      = match_expressions["key"]
+                    operator = match_expressions["operator"]
+                    values   = match_expressions["values"]
                   }
                 }
               }
@@ -103,16 +98,12 @@ resource "kubernetes_deployment" "deployment" {
               for_each = var.preferred_node_affinity_rules != null ? [1] : []
 
               content {
-                weight = 1
+                weight = 0
                 preference {
-                  dynamic "match_expressions" {
-                    for_each = coalesce(var.preferred_node_affinity_rules, [])
-
-                    content {
-                      key      = match_expressions["key"]
-                      operator = match_expressions["operator"]
-                      values   = match_expressions["values"]
-                    }
+                  content {
+                    key      = match_expressions["key"]
+                    operator = match_expressions["operator"]
+                    values   = match_expressions["values"]
                   }
                 }
               }
