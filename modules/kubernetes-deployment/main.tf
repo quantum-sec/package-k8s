@@ -85,11 +85,9 @@ resource "kubernetes_deployment" "deployment" {
 
               content {
                 node_selector_term {
-                  content {
-                    key      = match_expressions["key"]
-                    operator = match_expressions["operator"]
-                    values   = match_expressions["values"]
-                  }
+                  key      = match_expressions["key"]
+                  operator = match_expressions["operator"]
+                  values   = match_expressions["values"]
                 }
               }
             }
@@ -100,11 +98,9 @@ resource "kubernetes_deployment" "deployment" {
               content {
                 weight = 0
                 preference {
-                  content {
-                    key      = match_expressions["key"]
-                    operator = match_expressions["operator"]
-                    values   = match_expressions["values"]
-                  }
+                  key      = match_expressions["key"]
+                  operator = match_expressions["operator"]
+                  values   = match_expressions["values"]
                 }
               }
             }
