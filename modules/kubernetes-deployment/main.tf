@@ -23,6 +23,14 @@ provider "kubernetes" {
   load_config_file = false
 }
 
+locals {
+  has_node_affinity_rules     = var.required_node_affinity_rules != null || var.preferred_node_affinity_rules != null
+  has_pod_affinity_rules      = var.required_pod_affinity_label_selector != null || var.preferred_pod_affinity_label_selector != null
+  has_pod_anti_affinity_rules = var.required_pod_anti_affinity_label_selector != null || var.preferred_pod_anti_affinity_label_selector != null
+  has_affinity_rules          = local.has_node_affinity_rules || local.has_pod_affinity_rules || local.has_pod_anti_affinity_rules
+  has_dns_config              = var.dns_nameservers != null || var.dns_search_domains != null || var.dns_resolver_options != null
+}
+
 resource "kubernetes_deployment" "deployment" {
 
   metadata {
@@ -78,99 +86,114 @@ resource "kubernetes_deployment" "deployment" {
         subdomain                        = var.subdomain
         termination_grace_period_seconds = var.termination_grace_period_seconds
 
-        affinity {
-          node_affinity {
+        dynamic "affinity" {
+          for_each = local.has_affinity_rules == true ? [1] : []
 
-            dynamic "required_during_scheduling_ignored_during_execution" {
-              for_each = var.required_node_affinity_rules != null ? [1] : []
+          content {
+            dynamic "node_affinity" {
+              for_each = local.has_node_affinity_rules == true ? [1] : []
 
               content {
-                node_selector_term {
-                  dynamic "match_expressions" {
-                    for_each = coalesce(var.required_node_affinity_rules, [])
+                dynamic "required_during_scheduling_ignored_during_execution" {
+                  for_each = var.required_node_affinity_rules != null ? [1] : []
 
-                    content {
-                      key      = match_expressions["key"]
-                      operator = match_expressions["operator"]
-                      values   = match_expressions["values"]
+                  content {
+                    node_selector_term {
+                      dynamic "match_expressions" {
+                        for_each = coalesce(var.required_node_affinity_rules, [])
+
+                        content {
+                          key      = match_expressions["key"]
+                          operator = match_expressions["operator"]
+                          values   = match_expressions["values"]
+                        }
+                      }
+                    }
+                  }
+                }
+
+                dynamic "preferred_during_scheduling_ignored_during_execution" {
+                  for_each = var.preferred_node_affinity_rules != null ? [1] : []
+
+                  content {
+                    weight = 1
+                    preference {
+                      dynamic "match_expressions" {
+                        for_each = coalesce(var.preferred_node_affinity_rules, [])
+
+                        content {
+                          key      = match_expressions["key"]
+                          operator = match_expressions["operator"]
+                          values   = match_expressions["values"]
+                        }
+                      }
                     }
                   }
                 }
               }
             }
 
-            dynamic "preferred_during_scheduling_ignored_during_execution" {
-              for_each = var.preferred_node_affinity_rules != null ? [1] : []
+            dynamic "pod_affinity" {
+              for_each = local.has_pod_affinity_rules == true ? [1] : []
 
               content {
-                weight = 1
-                preference {
-                  dynamic "match_expressions" {
-                    for_each = coalesce(var.preferred_node_affinity_rules, [])
+                dynamic "required_during_scheduling_ignored_during_execution" {
+                  for_each = var.required_pod_affinity_label_selector != null ? [1] : []
 
-                    content {
-                      key      = match_expressions["key"]
-                      operator = match_expressions["operator"]
-                      values   = match_expressions["values"]
+                  content {
+                    namespaces   = var.required_pod_affinity_namespaces
+                    topology_key = var.required_pod_affinity_topology_key
+                    label_selector {
+                      match_labels = var.required_pod_affinity_label_selector
+                    }
+                  }
+                }
+
+                dynamic "preferred_during_scheduling_ignored_during_execution" {
+                  for_each = var.preferred_pod_affinity_label_selector != null ? [1] : []
+
+                  content {
+                    weight = 1
+                    pod_affinity_term {
+                      namespaces   = var.preferred_pod_affinity_namespaces
+                      topology_key = var.preferred_pod_affinity_topology_key
+                      label_selector {
+                        match_labels = var.preferred_pod_affinity_label_selector
+                      }
                     }
                   }
                 }
               }
             }
-          }
 
-          pod_affinity {
-            dynamic "required_during_scheduling_ignored_during_execution" {
-              for_each = var.required_pod_affinity_label_selector != null ? [1] : []
+            dynamic "pod_anti_affinity" {
+              for_each = local.has_pod_anti_affinity_rules == true ? [1] : []
 
               content {
-                namespaces   = var.required_pod_affinity_namespaces
-                topology_key = var.required_pod_affinity_topology_key
-                label_selector {
-                  match_labels = var.required_pod_affinity_label_selector
-                }
-              }
-            }
+                dynamic "required_during_scheduling_ignored_during_execution" {
+                  for_each = var.required_pod_anti_affinity_label_selector != null ? [1] : []
 
-            dynamic "preferred_during_scheduling_ignored_during_execution" {
-              for_each = var.preferred_pod_affinity_label_selector != null ? [1] : []
-
-              content {
-                weight = 1
-                pod_affinity_term {
-                  namespaces   = var.preferred_pod_affinity_namespaces
-                  topology_key = var.preferred_pod_affinity_topology_key
-                  label_selector {
-                    match_labels = var.preferred_pod_affinity_label_selector
+                  content {
+                    namespaces   = var.required_pod_anti_affinity_namespaces
+                    topology_key = var.required_pod_anti_affinity_topology_key
+                    label_selector {
+                      match_labels = var.required_pod_anti_affinity_label_selector
+                    }
                   }
                 }
-              }
-            }
-          }
 
-          pod_anti_affinity {
-            dynamic "required_during_scheduling_ignored_during_execution" {
-              for_each = var.required_pod_anti_affinity_label_selector != null ? [1] : []
+                dynamic "preferred_during_scheduling_ignored_during_execution" {
+                  for_each = var.preferred_pod_anti_affinity_label_selector != null ? [1] : []
 
-              content {
-                namespaces   = var.required_pod_anti_affinity_namespaces
-                topology_key = var.required_pod_anti_affinity_topology_key
-                label_selector {
-                  match_labels = var.required_pod_anti_affinity_label_selector
-                }
-              }
-            }
-
-            dynamic "preferred_during_scheduling_ignored_during_execution" {
-              for_each = var.preferred_pod_anti_affinity_label_selector != null ? [1] : []
-
-              content {
-                weight = 1
-                pod_affinity_term {
-                  namespaces   = var.preferred_pod_anti_affinity_namespaces
-                  topology_key = var.preferred_pod_anti_affinity_topology_key
-                  label_selector {
-                    match_labels = var.preferred_pod_anti_affinity_label_selector
+                  content {
+                    weight = 1
+                    pod_affinity_term {
+                      namespaces   = var.preferred_pod_anti_affinity_namespaces
+                      topology_key = var.preferred_pod_anti_affinity_topology_key
+                      label_selector {
+                        match_labels = var.preferred_pod_anti_affinity_label_selector
+                      }
+                    }
                   }
                 }
               }
@@ -217,16 +240,20 @@ resource "kubernetes_deployment" "deployment" {
           }
         }
 
-        dns_config {
-          nameservers = var.dns_nameservers
-          searches    = var.dns_search_domains
+        dynamic "dns_config" {
+          for_each = local.has_dns_config == true ? [1] : []
 
-          dynamic "option" {
-            for_each = coalesce(var.dns_resolver_options, [])
+          content {
+            nameservers = var.dns_nameservers
+            searches    = var.dns_search_domains
 
-            content {
-              name  = option.value.name
-              value = option.value.value
+            dynamic "option" {
+              for_each = coalesce(var.dns_resolver_options, [])
+
+              content {
+                name  = option.value.name
+                value = option.value.value
+              }
             }
           }
         }
