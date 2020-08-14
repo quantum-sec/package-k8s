@@ -222,8 +222,8 @@ resource "kubernetes_deployment" "deployment" {
               for_each = coalesce(container.value.ports, [])
 
               content {
-                container_port = try(port.value["container_port"], port.value["containerPort"])
-                protocol       = try(port.value["protocol"], "TCP")
+                container_port = try(port.value.container_port, port.value.containerPort)
+                protocol       = try(port.value.protocol, "TCP")
               }
             }
 
