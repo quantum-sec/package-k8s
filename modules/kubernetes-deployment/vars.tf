@@ -336,9 +336,17 @@ variable "volumes" {
       items = list(object({
         key  = string,
         path = string,
-      })),
+      }))
+    })),
+    config_map = list(object({
+      name = string,
+      items = list(object({
+        key  = string,
+        path = string,
+      }))
     }))
   }))
+  default = []
 }
 
 variable "containers" {
