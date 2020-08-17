@@ -327,7 +327,7 @@ variable "host_aliases" {
   default = []
 }
 
-variable "volume" {
+variable "volumes" {
   description = "A list of volumes that can be mounted by containers that are members of this pod."
   type = set(object({
     name = string,
