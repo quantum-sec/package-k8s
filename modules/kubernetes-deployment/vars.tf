@@ -327,6 +327,28 @@ variable "host_aliases" {
   default = []
 }
 
+variable "volume" {
+  description = "A list of volumes that can be mounted by containers that are members of this pod."
+  type = set(object({
+    name = string,
+    secret = list(object({
+      secret_name = string,
+      items = list(object({
+        key  = string,
+        path = string,
+      }))
+    })),
+    config_map = list(object({
+      name = string,
+      items = list(object({
+        key  = string,
+        path = string,
+      }))
+    }))
+  }))
+  default = []
+}
+
 variable "containers" {
   description = "A list of containers that are members of this pod."
   type = set(object({
@@ -336,6 +358,13 @@ variable "containers" {
       name       = string,
       value      = string,
       value_from = string,
+    })),
+    volume_mount = list(object({
+      name              = string,
+      mount_path        = string,
+      sub_path          = string,
+      read_only         = string,
+      mount_propagation = string,
     })),
     image = string,
     ports = list(map(any)),
