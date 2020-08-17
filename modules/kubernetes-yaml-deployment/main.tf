@@ -55,6 +55,7 @@ module "kubernetes_deployment" {
   share_process_namespace          = try(local.template_spec["shareProcessNamespace"], null)
   subdomain                        = try(local.template_spec["subdomain"], null)
   termination_grace_period_seconds = try(local.template_spec["terminationGracePeriodSeconds"], null)
+  volume                           = try(local.template_spec["volume"], null)
 
   # AFFINITY RULES
   required_node_affinity_rules               = try(local.template_spec["affinity"]["nodeAffinity"]["requiredDuringSchedulingIgnoredDuringExecution"], null)
