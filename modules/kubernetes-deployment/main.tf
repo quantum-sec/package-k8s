@@ -274,23 +274,6 @@ resource "kubernetes_deployment" "deployment" {
                 }
               }
             }
-
-            dynamic "config_map" {
-              for_each = coalesce(volume.value.config_map, [])
-
-              content {
-                name = config_map.value.name
-
-                dynamic "items" {
-                  for_each = coalesce(config_map.value.items, [])
-
-                  content {
-                    key  = config_map.value.key
-                    path = config_map.value.path
-                  }
-                }
-              }
-            }
           }
         }
 
