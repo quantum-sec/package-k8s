@@ -348,7 +348,7 @@ variable "containers" {
       value      = string,
       value_from = string,
     })),
-    volume_mount = object({
+    volumeMounts = object({
       name       = string,
       mount_path = string,
     }),
