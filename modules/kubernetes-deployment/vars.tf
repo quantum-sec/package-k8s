@@ -331,20 +331,9 @@ variable "volumes" {
   description = "A list of volumes that can be mounted by containers that are members of this pod."
   type = set(object({
     name = string,
-    secret = set(object({
+    secret = object({
       secret_name = string,
-      items = list(object({
-        key  = string,
-        path = string,
-      }))
-    })),
-    config_map = set(object({
-      name = string,
-      items = list(object({
-        key  = string,
-        path = string,
-      }))
-    }))
+    }),
   }))
   default = []
 }
@@ -359,10 +348,10 @@ variable "containers" {
       value      = string,
       value_from = string,
     })),
-    volume_mount = set(object({
+    volume_mount = object({
       name       = string,
       mount_path = string,
-    })),
+    }),
     image = string,
     ports = list(map(any)),
     resources = object({
