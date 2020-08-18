@@ -332,7 +332,7 @@ variable "volumes" {
   type = set(object({
     name = string,
     secret = object({
-      secret_name = string,
+      secretName = string,
     }),
   }))
   default = []
