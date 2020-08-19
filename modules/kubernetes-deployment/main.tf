@@ -256,19 +256,10 @@ resource "kubernetes_deployment" "deployment" {
             name = volume.value.name
 
             dynamic "secret" {
-              for_each = coalesce(volume.value.secret, {})
+              for_each = volume.value.secret != null ? [1] : []
 
               content {
-                secret_name = secret.value.secretName
-
-                dynamic "items" {
-                  for_each = coalesce(secret.value.items, [])
-
-                  content {
-                    key  = items.value.key
-                    path = items.value.path
-                  }
-                }
+                secret_name = volume.value.secret.secretName
               }
             }
           }
