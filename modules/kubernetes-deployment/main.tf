@@ -219,14 +219,11 @@ resource "kubernetes_deployment" "deployment" {
             }
 
             dynamic "volume_mount" {
-              for_each = coalesce(container.value.volume_mount, [])
+              for_each = coalesce(container.value.volumeMounts, [])
 
               content {
-                name              = volume_mount.value.name
-                mount_path        = volume_mount.value.mount_path
-                sub_path          = volume_mount.value.sub_path
-                read_only         = volume_mount.value.read_only
-                mount_propagation = volume_mount.value.mount_propagation
+                name       = volume_mount.value.name
+                mount_path = volume_mount.value.mountPath
               }
             }
 
@@ -262,7 +259,7 @@ resource "kubernetes_deployment" "deployment" {
               for_each = coalesce(volume.value.secret, [])
 
               content {
-                secret_name = secret.value.secret_name
+                secret_name = secret.value.secretName
 
                 dynamic "items" {
                   for_each = coalesce(secret.value.items, [])
