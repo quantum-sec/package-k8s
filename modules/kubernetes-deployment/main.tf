@@ -256,7 +256,7 @@ resource "kubernetes_deployment" "deployment" {
             name = volume.value.name
 
             dynamic "secret" {
-              for_each = coalesce(volume.value.secret, [])
+              for_each = coalesce(volume.value.secret, {})
 
               content {
                 secret_name = secret.value.secretName
@@ -267,23 +267,6 @@ resource "kubernetes_deployment" "deployment" {
                   content {
                     key  = items.value.key
                     path = items.value.path
-                  }
-                }
-              }
-            }
-
-            dynamic "config_map" {
-              for_each = coalesce(volume.value.config_map, [])
-
-              content {
-                name = config_map.value.name
-
-                dynamic "items" {
-                  for_each = coalesce(config_map.value.items, [])
-
-                  content {
-                    key  = config_map.value.key
-                    path = config_map.value.path
                   }
                 }
               }
