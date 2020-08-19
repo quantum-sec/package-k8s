@@ -219,14 +219,11 @@ resource "kubernetes_deployment" "deployment" {
             }
 
             dynamic "volume_mount" {
-              for_each = coalesce(container.value.volume_mount, [])
+              for_each = coalesce(container.value.volumeMounts, [])
 
               content {
-                name              = volume_mount.value.name
-                mount_path        = volume_mount.value.mount_path
-                sub_path          = volume_mount.value.sub_path
-                read_only         = volume_mount.value.read_only
-                mount_propagation = volume_mount.value.mount_propagation
+                name       = volume_mount.value.name
+                mount_path = volume_mount.value.mountPath
               }
             }
 
@@ -259,36 +256,10 @@ resource "kubernetes_deployment" "deployment" {
             name = volume.value.name
 
             dynamic "secret" {
-              for_each = coalesce(volume.value.secret, [])
+              for_each = volume.value.secret != null ? [1] : []
 
               content {
-                secret_name = secret.value.secret_name
-
-                dynamic "items" {
-                  for_each = coalesce(secret.value.items, [])
-
-                  content {
-                    key  = items.value.key
-                    path = items.value.path
-                  }
-                }
-              }
-            }
-
-            dynamic "config_map" {
-              for_each = coalesce(volume.value.config_map, [])
-
-              content {
-                name = config_map.value.name
-
-                dynamic "items" {
-                  for_each = coalesce(config_map.value.items, [])
-
-                  content {
-                    key  = config_map.value.key
-                    path = config_map.value.path
-                  }
-                }
+                secret_name = volume.value.secret.secretName
               }
             }
           }

@@ -349,8 +349,8 @@ variable "containers" {
       value_from = string,
     })),
     volumeMounts = set(object({
-      name       = string,
-      mount_path = string,
+      name      = string,
+      mountPath = string,
     })),
     image = string,
     ports = list(map(any)),
