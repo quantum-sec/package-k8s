@@ -348,10 +348,10 @@ variable "containers" {
       value      = string,
       value_from = string,
     })),
-    volumeMounts = object({
+    volumeMounts = set(object({
       name       = string,
       mount_path = string,
-    }),
+    })),
     image = string,
     ports = list(map(any)),
     resources = object({
