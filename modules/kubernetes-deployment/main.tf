@@ -6,23 +6,6 @@ terraform {
   required_version = ">= 0.12"
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
-# SETUP THE LOCAL PROVIDER
-# We use a local provider here because it needs to be configured separately from the cloud provider. We also need to
-# use output variables from other modules to populate configuration of this provider.
-# ---------------------------------------------------------------------------------------------------------------------
-provider "kubernetes" {
-  version = "1.12.0"
-
-  host = var.host
-
-  client_certificate     = var.client_certificate
-  client_key             = var.client_key
-  cluster_ca_certificate = var.cluster_ca_certificate
-
-  load_config_file = false
-}
-
 locals {
   has_node_affinity_rules     = var.required_node_affinity_rules != null || var.preferred_node_affinity_rules != null
   has_pod_affinity_rules      = var.required_pod_affinity_label_selector != null || var.preferred_pod_affinity_label_selector != null
