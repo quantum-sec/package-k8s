@@ -24,7 +24,7 @@ resource "kubernetes_service" "service" {
     session_affinity            = var.session_affinity
     type                        = var.type
 
-    selector {
+    selector = {
       app = var.selector
     }
 
