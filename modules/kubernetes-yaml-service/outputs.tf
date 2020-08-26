@@ -18,12 +18,7 @@ output "uid" {
   value       = module.kubernetes_service.uid
 }
 
-output "load_balancer_ingress_ip" {
-  description = "The IP which is set for load balancer ingress points that are IP-based."
-  value       = module.kubernetes_service.load_balancer_ingress_ip
-}
-
-output "load_balancer_ingress_hostname" {
-  description = "The Hostname which is set for load balancer ingress points that are DNS-based."
-  value       = module.kubernetes_service.load_balancer_ingress_hostname
+output "load_balancer_ingress" {
+  description = "A list containing ingress points for the load balancer (only valid if `type` is `LoadBalancer`)."
+  value       = module.kubernetes_service.load_balancer_ingress
 }
