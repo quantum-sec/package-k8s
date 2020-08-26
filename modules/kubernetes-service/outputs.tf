@@ -20,10 +20,10 @@ output "uid" {
 
 output "load_balancer_ingress_ip" {
   description = "The IP which is set for load balancer ingress points that are IP-based."
-  value       = kubernetes_service.service.load_balancer_ingress.ip
+  value       = try(kubernetes_service.service.load_balancer_ingress.ip, null)
 }
 
 output "load_balancer_ingress_hostname" {
   description = "The Hostname which is set for load balancer ingress points that are DNS-based."
-  value       = kubernetes_service.service.load_balancer_ingress.hostname
+  value       = try(kubernetes_service.service.load_balancer_ingress.hostname, null)
 }
