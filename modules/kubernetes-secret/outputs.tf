@@ -1,3 +1,8 @@
+output "name" {
+  description = "The name of the secret."
+  value       = var.name
+}
+
 output "generation" {
   description = "A sequence number representing the specific generation of the desired state."
   value       = kubernetes_secret.secret.metadata[0].generation
