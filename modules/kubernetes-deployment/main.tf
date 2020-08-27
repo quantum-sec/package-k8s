@@ -245,6 +245,14 @@ resource "kubernetes_deployment" "deployment" {
                 secret_name = volume.value.secret.secretName
               }
             }
+
+            dynamic "persistent_volume_claim" {
+              for_each = volume.value.persistentVolumeClaim != null ? [1] : []
+
+              content {
+                claim_name = volume.value.persistentVolumeClaim.claimName
+              }
+            }
           }
         }
 

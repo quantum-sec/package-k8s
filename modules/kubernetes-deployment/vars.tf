@@ -305,13 +305,8 @@ variable "host_aliases" {
 
 variable "volumes" {
   description = "A list of volumes that can be mounted by containers that are members of this pod."
-  type = set(object({
-    name = string,
-    secret = object({
-      secretName = string,
-    }),
-  }))
-  default = []
+  type        = set(any)
+  default     = []
 }
 
 variable "containers" {
