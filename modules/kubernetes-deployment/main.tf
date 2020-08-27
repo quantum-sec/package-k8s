@@ -239,7 +239,7 @@ resource "kubernetes_deployment" "deployment" {
             name = volume.value.name
 
             dynamic "secret" {
-              for_each = volume.value.secret != null ? [1] : []
+              for_each = try(volume.value.secret, null) != null ? [1] : []
 
               content {
                 secret_name = volume.value.secret.secretName
@@ -247,7 +247,7 @@ resource "kubernetes_deployment" "deployment" {
             }
 
             dynamic "persistent_volume_claim" {
-              for_each = volume.value.persistentVolumeClaim != null ? [1] : []
+              for_each = try(volume.value.persistentVolumeClaim, null) != null ? [1] : []
 
               content {
                 claim_name = volume.value.persistentVolumeClaim.claimName
