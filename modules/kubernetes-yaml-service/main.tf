@@ -22,11 +22,11 @@ module "kubernetes_service" {
   namespace   = try(local.metadata["namespace"], null)
 
   # SPEC
-  cluster_ip                  = try(local.spec["clusterIp"], null)
-  external_ips                = try(local.spec["externalIps"], null)
+  cluster_ip                  = try(local.spec["clusterIP"], null)
+  external_ips                = try(local.spec["externalIPs"], null)
   external_name               = try(local.spec["externalName"], null)
   external_traffic_policy     = try(local.spec["externalTrafficPolicy"], null)
-  load_balancer_ip            = try(local.spec["loadBalancerIp"], null)
+  load_balancer_ip            = try(local.spec["loadBalancerIP"], null)
   load_balancer_source_ranges = try(local.spec["loadBalancerSourceRanges"], null)
   port                        = try(local.spec["ports"], [])
   selector                    = try(local.spec["selector"]["app"], null)
