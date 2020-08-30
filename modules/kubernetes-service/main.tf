@@ -39,4 +39,12 @@ resource "kubernetes_service" "service" {
       }
     }
   }
+
+  timeouts {
+    # This represents an increase of 30 minutes on the default timeout. This is due to caching of the AKS managed
+    # identity preventing the correct allocation of resources from other resource groups. A refresh cannot be triggered.
+    # This has no other effect in GKE or EKS environments.
+    # See: https://docs.microsoft.com/en-us/azure/role-based-access-control/troubleshooting#role-assignment-changes-are-not-being-detected
+    create = "40m"
+  }
 }
