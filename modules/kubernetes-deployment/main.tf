@@ -245,6 +245,13 @@ resource "kubernetes_deployment" "deployment" {
                 secret_name = volume.value.secret.secretName
               }
             }
+            dynamic "config_map" {
+              for_each = try(volume.value.configMap, null) != null ? [1] : []
+
+              content {
+                config_map = volume.value.configMap.name
+              }
+            }
 
             dynamic "persistent_volume_claim" {
               for_each = try(volume.value.persistentVolumeClaim, null) != null ? [1] : []
