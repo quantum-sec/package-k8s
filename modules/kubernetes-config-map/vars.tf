@@ -1,34 +1,11 @@
 # ---------------------------------------------------------------------------------------------------------------------
-# PROVIDER VARIABLES
-# ---------------------------------------------------------------------------------------------------------------------
-
-variable "host" {
-  description = "The Kubernetes cluster's API endpoint URL."
-  type        = string
-}
-
-variable "client_certificate" {
-  description = "The client certificate (in PEM format) used to authenticate to the Kubernetes cluster."
-  type        = string
-}
-
-variable "client_key" {
-  description = "The client private key (in PEM format) used to encrypt communicates with the Kubernetes cluster."
-  type        = string
-}
-
-variable "cluster_ca_certificate" {
-  description = "The cluster's CA certificate (in PEM format) used to validate remote host identity."
-  type        = string
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
 # DEPLOYMENT VARIABLES
 # ---------------------------------------------------------------------------------------------------------------------
 
 variable "name" {
   description = "The name of the config map. Must be unique and cannot be updated."
   type        = string
+  default     = "config-map"
 }
 
 variable "namespace" {
