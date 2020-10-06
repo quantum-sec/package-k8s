@@ -1,5 +1,5 @@
 output "name" {
-  description = "The name of the secret."
+  description = "The name of config map."
   value       = var.name
 }
 
