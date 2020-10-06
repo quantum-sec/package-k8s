@@ -5,7 +5,6 @@
 variable "name" {
   description = "The name of the config map. Must be unique and cannot be updated."
   type        = string
-  default     = "config-map"
 }
 
 variable "namespace" {
