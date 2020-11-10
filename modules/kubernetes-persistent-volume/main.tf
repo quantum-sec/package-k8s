@@ -2,6 +2,17 @@
 # CREATE A KUBERNETES PERSISTENT VOLUME
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+terraform {
+  required_version = ">= 0.13"
+
+  required_providers {
+    cloudflare = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 1.13.3"
+    }
+  }
+}
+
 resource "kubernetes_persistent_volume" "volume" {
   metadata {
     name = var.name

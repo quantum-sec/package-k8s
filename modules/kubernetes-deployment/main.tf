@@ -3,7 +3,14 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 0.13"
+
+  required_providers {
+    cloudflare = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 1.13.3"
+    }
+  }
 }
 
 locals {
@@ -245,11 +252,12 @@ resource "kubernetes_deployment" "deployment" {
                 secret_name = volume.value.secret.secretName
               }
             }
+
             dynamic "config_map" {
               for_each = try(volume.value.configMap, null) != null ? [1] : []
 
               content {
-                config_map = volume.value.configMap.name
+                name = volume.value.configMap.name
               }
             }
 

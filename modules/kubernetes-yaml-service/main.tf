@@ -3,7 +3,14 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 0.13"
+
+  required_providers {
+    cloudflare = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 1.13.3"
+    }
+  }
 }
 
 locals {
