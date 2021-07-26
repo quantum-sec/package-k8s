@@ -24,6 +24,6 @@ jobs:
           parameters:
             name: UpdateInfrastructureModules
             displayName: Update Infrastructure Modules
-            srcRepository: package-k8s.git
-            dstRepository: infrastructure-modules
+            packageName: package-k8s
+            repository: infrastructure-modules
             condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
