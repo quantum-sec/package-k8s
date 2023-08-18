@@ -25,11 +25,11 @@ variable "labels" {
   default     = null
 }
 
-variable "wait_for_rollout" {
-  description = "Whether or not to wait for the deployment to successfully roll out."
-  type        = bool
-  default     = true
-}
+#variable "wait_for_rollout" {
+#  description = "Whether or not to wait for the deployment to successfully roll out."
+#  type        = bool
+#  default     = true
+#}
 
 variable "min_ready_seconds" {
   description = "The minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available."
